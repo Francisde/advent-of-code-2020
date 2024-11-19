@@ -16,14 +16,12 @@ def solve_part_two(billet_list):
         col = get_col(billet)
         ids.append(row * 8 + col)
         field[row][col] = "#"
-    for row in field:
-        print(row)
     for i in range(128):
         for j in range(8):
             if field[i][j] == ".":
                 current_id = i * 8 + j
                 if current_id - 1 in ids and current_id + 1 in ids:
-                    print("found")
+
                     my_id = current_id
 
     return my_id
@@ -52,14 +50,10 @@ def get_col(billet):
 file1 = open('puzzle.txt', 'r')
 Lines = file1.readlines()
 
-count = 0
-
 tickets = []
 
 for line in Lines:
     input_line= line.strip()
-    print("Line {}: {}".format(count, input_line))
-    count += 1
     tickets.append(input_line)
 
 
