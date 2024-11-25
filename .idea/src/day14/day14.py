@@ -9,13 +9,50 @@ def solve_part_one(instruction_list):
             index_b = instruction.index("]")
             register_v = instruction[index_a+1:index_b]
             value = int(instruction.split(" = ")[1])
+            reverse_mask = mask[::-1]
             for i in range(len(mask)):
-                print(mask[-i])
-                if mask[-i] == "X":
+                if reverse_mask[i] == "X":
                     continue
                 else:
-                    value = set_bit(value, i - 1, int(mask[-i]))
+                    value = set_bit(value, i , int(reverse_mask[i]))
             registers[register_v] = value
+    sum = 0
+    for register in registers.keys():
+        sum += registers[register]
+    return sum
+
+def solve_part_two(instruction_list):
+    mask = ""
+    registers = dict()
+    for instruction in instruction_list:
+        if instruction.startswith("mask"):
+            mask = instruction.split(" = ")[1]
+        else:
+            index_a = instruction.index("[")
+            index_b = instruction.index("]")
+            register_v = int(instruction[index_a+1:index_b])
+            value = int(instruction.split(" = ")[1])
+            reverse_mask = mask[::-1]
+
+            for i in range(len(mask)):
+                if reverse_mask[i] == "X" or reverse_mask[i] == "0":
+                    continue
+                else:
+                    register_v = set_bit(register_v, i , int(reverse_mask[i]))
+            register_adresses = []
+            register_adresses.append(register_v)
+            for i in range(len(mask)):
+                if reverse_mask[i] == "1" or reverse_mask[i] == "0":
+                    continue
+                else:
+                    new_register_adresses = []
+                    for register_adress in register_adresses:
+                        new_register_adresses.append(set_bit(register_adress, i , 1))
+                        new_register_adresses.append(set_bit(register_adress, i , 0))
+                    register_adresses = new_register_adresses
+
+            for register_adress in register_adresses:
+                registers["{}".format(register_adress)] = value
     sum = 0
     for register in registers.keys():
         sum += registers[register]
@@ -32,7 +69,7 @@ def set_bit(v, index, x):
     return v            # Return the result, we're done.
 
 
-file1 = open('test.txt', 'r')
+file1 = open('puzzle.txt', 'r')
 Lines = file1.readlines()
 
 count = 0
@@ -47,4 +84,4 @@ for line in Lines:
 
 print("TASK 1 - sol: {}".format(solve_part_one(instructions)))
 
-print("TASK 2 - ")
+print("TASK 2 - sol: {}".format(solve_part_two(instructions)))
